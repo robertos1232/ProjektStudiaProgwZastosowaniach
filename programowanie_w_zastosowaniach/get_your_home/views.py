@@ -66,7 +66,7 @@ def list_of_sale_announcement(request):
 
     context.update({
         "announcements": {
-            announcement: announcements.get().photos.get() for announcement in announcements
+            announcement: announcement.photos.first() for announcement in announcements
         }
     })
 
@@ -176,7 +176,9 @@ def profile_view(request):
         request=request,
         template_name="account/profile.html",
         context={
-            "announcements": announcements,
+            "announcements": {
+                announcement: announcement.photos.first() for announcement in announcements
+            }
         }
     )
 

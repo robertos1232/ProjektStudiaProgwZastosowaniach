@@ -56,9 +56,16 @@
         <div class="row mt-4">
             <div class="col">
                 <h1>Twoje ogłoszenia</h1>
-                {% for ann in announcements %}
-                    {{ ann }}
-                {% endfor %}
+                {% load static %}
+                <div class="row pt-5">
+                    <div class="col-6">
+                        {% for ann, photo in announcements.items %}
+                            <img class="d-block w-50" src="{% get_media_prefix %}{{ photo }}" alt="Zdejecie glowne"/>
+                            <a href="/view/{{ ann.address_city }}/{{ ann.address_street }}/{{ ann.address_number }}">{{ ann }}</a>
+                            Cena: {{ ann.price }} zł
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
         </div>
     </main>
