@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}
+    <title>Zmiana danych użytkownika</title>
+{% endblock %}
+
+{% block content %}
+    <main>
+        <form action="/profile/user_data_change/" method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" pattern=".+\@.+\.(\w){2,}" class="form-control" name="email" id="email" placeholder="{{ user.email }}"/>
+            </div>
+            <div class="form-group">
+                <label for="firstName">Imie</label>
+                <input type="text" class="form-control" name="firstName" id="firstName" placeholder="{{ user.first_name }}"/>
+            </div>
+            <div class="form-group">
+                <label for="lastName">Nazwisko</label>
+                <input type="text" class="form-control" name="lastName" id="lastName" placeholder="{{ user.last_name }}"/>
+            </div>
+            <div class="form-group mt-2">
+                <button type="submit" class="btn btn-primary">Zmień dane</button>
+            </div>
+        </form>
+    </main>
+{% endblock %}

@@ -1,41 +1,13 @@
-import uuid
-
-from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.core.files.uploadedfile import TemporaryUploadedFile
-from django.http import HttpResponseRedirect, QueryDict, Http404
+from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render, redirect
-from .models import SaleAnnouncement, Photo
+from .models import SaleAnnouncement
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 
+from .utils import get_context_to_filter, check_fields, save_photo
+
 _skip_statutes = ["canceled", "sold", "blocked"]
-
-
-def get_context_to_filter(with_nulls=False):
-    all_data = {
-        "all": "Wszystkie"
-    }
-    ann_types = SaleAnnouncement.PROPERTY_TYPES
-    statutes = {k: v for k, v in SaleAnnouncement.STATUSES.items() if k not in _skip_statutes}
-    heating_types = {k: v for k, v in SaleAnnouncement.STATUSES.items() if k not in _skip_statutes}
-    if with_nulls:
-        ann_types = all_data | ann_types
-        statutes = all_data | statutes
-        heating_types = all_data | heating_types
-
-    return {
-        "ann_types": ann_types,
-        "statutes": statutes,
-        "heating_types": heating_types,
-    }
-
-
-def check_fields(request_data: QueryDict, required_fields: dict[str, str]) -> str:
-    for english_field, polish_field in required_fields.items():
-        if not request_data.get(english_field):
-            return f'Brakuje pola {polish_field}, następujące pola są wymagane: {", ".join(required_fields.values())}'
-    return ''
 
 
 # This view is used as index
@@ -44,7 +16,7 @@ def list_of_sale_announcement(request):
         status__in=_skip_statutes,
     )
 
-    context = get_context_to_filter(True)
+    context = get_context_to_filter(True, _skip_statutes)
 
     if request.GET:
         req = request.GET
@@ -207,26 +179,6 @@ def details(request, city, street, number):
     )
 
 
-def save_photo(announcement: SaleAnnouncement, photo: TemporaryUploadedFile):
-    photo_base_path = (
-        f"{announcement.address_city}_"
-        f"{announcement.address_street}_"
-        f"{announcement.address_number}"
-    )
-
-    if not photo.content_type.startswith('image'):
-        return None
-    photo_format = photo.content_type.split('/')[1]
-    new_photo = Photo(
-        name=f'{photo_base_path}_{str(uuid.uuid4())}.{photo_format}'
-    )
-
-    with open(f'{settings.MEDIA_ROOT}/{new_photo.name}', 'wb') as photo_file:
-        photo_file.writelines(photo.readlines())
-    new_photo.save()
-    return new_photo
-
-
 @login_required(login_url="/login/")
 def add_announcement(request):
     if request.POST:
@@ -264,5 +216,66 @@ def add_announcement(request):
     return render(
         request=request,
         template_name="add_announcement.html",
-        context=get_context_to_filter()
+        context=get_context_to_filter(statuses_to_skip=_skip_statutes)
+    )
+
+
+@login_required(login_url="/login/")
+def password_change(request):
+    template_name_to_use = 'account/password_change.html'
+    if request.POST:
+        error_message = check_fields(request.POST, {
+            "password": "hasło"
+        })
+
+        if error_message:
+            return render(
+                request=request,
+                template_name=template_name_to_use,
+                context={"warning": error_message}
+            )
+
+        user = request.user
+        user.set_password(request.POST.get("password"))
+        user.save()
+        request.session['info'] = "hasło zostało zaktualizowane"
+        login(request, user)
+
+        return redirect(
+            profile_view.__name__
+        )
+
+    return render(
+        request=request,
+        template_name=template_name_to_use,
+        context={}
+    )
+
+
+@login_required(login_url="/login/")
+def change_user_data(request):
+    template_name_to_use = 'account/change_user_data.html'
+    if request.POST:
+        u = request.user
+        email = request.POST.get("email")
+        first_name = request.POST.get("firstName")
+        last_name = request.POST.get("lastName")
+
+        if email:
+            u.email = email
+        if first_name:
+            u.first_name = first_name
+        if last_name:
+            u.last_name = last_name
+
+        u.save()
+        login(request, u)
+        return redirect(
+            profile_view.__name__
+        )
+
+    return render(
+        request=request,
+        template_name=template_name_to_use,
+        context={}
     )

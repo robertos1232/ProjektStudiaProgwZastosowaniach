@@ -12,4 +12,6 @@ urlpatterns = [
     path("add/", views.add_announcement, name='add_new_announcement'),
     path("view/<city>/<street>/<number>/", views.details, name="details"),
     path("filter/", views.list_of_sale_announcement, name="filtered_list"),
+    path("profile/password_change/", views.password_change, name="password_change"),
+    path("profile/user_data_change/", views.change_user_data, name="user_data_change"),
 ]

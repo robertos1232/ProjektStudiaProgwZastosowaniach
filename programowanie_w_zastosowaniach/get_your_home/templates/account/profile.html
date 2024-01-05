@@ -6,51 +6,21 @@
 
 {% block content %}
     <main>
+        {% if info %}
+            {# Info przychodzi tylko z specjalnym kontektem, podczas zmian hasła, czy informacji #}
+            <div class="alert alert-info" id="alert" role="alert"  {% if not info %} hidden="hidden" {% endif %}>
+                {{ info }}
+            </div>
+        {% endif %}
+
         <div class="row">
             <div class="col-6">
                 <h3>Moje dane</h3>
                 <b>Email</b>: {{ user.email | default:"Brak" }}<br/>
                 <b>Imie</b>: {{ user.first_name | default:"Brak" }}<br/>
                 <b>Nazwisko</b>: {{ user.last_name | default:"Brak" }}<br/>
-                <a class="btn btn-outline-info">Zmiana danych</a>
-            </div>
-            <div class="col">
-                <script>
-                    function formValidation() {
-                        let basePassword = document.getElementById("password").value;
-                        let repeatedPassword = document.getElementById("repeatPassword").value;
-                        if (basePassword !== repeatedPassword) {
-                            let alert = document.getElementById("alert")
-                            alert.innerText = "Hasła nie są takie same";
-                            alert.hidden = false;
-                            return false;
-                        }
-                        return true;
-                    }
-                </script>
-                <h3>Zmiana hasła</h3>
-                <div class="alert alert-warning" id="alert" rol9e="alert"  {% if not warning %}
-                     hidden="hidden" {% endif %}>
-                    {{ warning }}
-                </div>
-                <form>
-                    <form method="post" action="/account/password/" onsubmit="formValidation();">
-                        {% csrf_token %}
-
-                        <div class="form-group">
-                            <label for="password">Hasło</label>
-                            <input type="password" class="form-control" id="password" name="password"
-                                   placeholder="Password"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="repeatPassword">Powtórz hasło</label>
-                            <input type="password" class="form-control" id="repeatPassword" placeholder="Password"/>
-                        </div>
-                        <div class="form-group mt-2">
-                            <button type="submit" class="btn btn-primary">Zmień hasło</button>
-                        </div>
-                    </form>
-                </form>
+                <a href="user_data_change/" class="btn btn-outline-info">Zmiana danych</a>
+                <a href="password_change/" class="btn btn-outline-secondary">Zmiana hasła</a>
             </div>
         </div>
         <div class="row mt-4">
