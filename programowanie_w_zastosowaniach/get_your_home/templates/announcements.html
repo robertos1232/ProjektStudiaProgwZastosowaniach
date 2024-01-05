@@ -1,0 +1,62 @@
+<form action="/filter/" method="GET">
+    <div class="form-group pt-2">
+        <label for="typeOfAnn">Typ</label>
+        <select class="form-control" id="typeOfAnn" name="typeOfAnn">
+            {% for ann_type, description in ann_types.items %}
+                <option value="{{ ann_type }}">{{ description }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="form-group pt-2">
+        <label for="typeOfStatus">Status</label>
+        <select class="form-control" id="typeOfStatus" name="typeOfStatus">
+            {% for status_type, description in statutes.items %}
+                <option value="{{ status_type }}">{{ description }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="form-group pt-2">
+        <label for="typeOfHeating">Typ ogrzewania</label>
+        <select class="form-control" id="typeOfHeating" name="typeOfHeating">
+            {% for heating_type, description in heating_types.items %}
+                <option value="{{ heating_type }}">{{ description }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="form-group pt-2">
+        <label for="minArea">Powierzchnia minimalna</label>
+        <input type="number" class="form-control" min="0" id="minArea" name="minArea">
+    </div>
+    <div class="form-group pt-2">
+        <label for="maxArea">Powierzchnia maksymalna</label>
+        <input type="number" class="form-control" min="0" id="maxArea" name="maxArea">
+    </div>
+    <div class="form-group pt-2">
+        <label for="city">Miasto</label>
+        <input type="text" class="form-control" id="city" name="city">
+    </div>
+    <div class="form-group pt-2">
+        <label for="street">Ulica</label>
+        <input type="text" class="form-control" id="street" name="street">
+    </div>
+    <div class="form-group pt-2">
+        <label for="minRoomsNumber">Minimalna ilość pokoi</label>
+        <input type="number" class="form-control" id="minRoomsNumber" min="0" name="minRoomsNumber">
+    </div>
+    <div class="form-group pt-2">
+        <label for="maxRoomsNumber">Maksymalna ilość pokoi</label>
+        <input type="number" class="form-control" id="maxRoomsNumber" name="maxRoomsNumber">
+    </div>
+    <div class="form-group pt-2">
+        <button type="submit" class="btn btn-secondary">Filtruj</button>
+    </div>
+
+</form>
+{% load static %}
+{% for ann, photos in announcements.items %}
+    {{ photos }}
+
+    <img class="d-block w-100" src="{% get_media_prefix  %}{{ ann.photo }}" alt="Zdejecie glowne" />
+
+    <a href="view/{{ ann.address_city }}/{{ ann.address_street }}/{{ ann.address_number }}">{{ ann }}</a>
+{% endfor %}

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="pl">
+<head>
+    <link href="{% static "bootstrap_5.3.2/css/bootstrap.css" %}" rel="stylesheet">
+    <script src="{% static "bootstrap_5.3.2/js/bootstrap.bundle.js" %}"></script>
+    <meta charset="UTF-8">
+    {% block title %}
+        <title>Nie ustawiony tytuł strony :(</title>
+    {% endblock %}
+</head>
+<body>
+<header class="d-flex align-items-center justify-content-center py-3 mb-4 border-bottom">
+    <div class="col-md-3 mb-2 mb-md-0">
+        <a href="/" class="d-inline-flex link-body-emphasis text-decoration-none">
+            <img class="bi" width="120" height="102" src="{% static "icons/house-home-sell-sign-icon.svg" %}"
+                 alt="My Happy SVG"/>
+        </a>
+    </div>
+    {% if user.is_authenticated %}
+        <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+            <li><a href="/" class="nav-link px-2 link-secondary">Strona główna</a></li>
+            <li><a href="/add/" class="nav-link px-2">Dodaj ogłoszenie</a></li>
+        </ul>
+    {% endif %}
+    {% if user.is_authenticated %}
+        <div class="col-md-3 text-end">
+            <form action="/logout/" method="post">
+                {% csrf_token %}
+                <a href="/profile" class="btn btn-primary">Twój profil</a>
+                <button type="submit" class="btn btn-outline-primary me-2">Wyloguj</button>
+            </form>
+        </div>
+    {% else %}
+        <div class="col-md-3 text-end">
+            <a href="/login" class="btn btn-outline-primary me-2">Logowanie</a>
+            <a href="/register" class="btn btn-primary">Rejestracja</a>
+        </div>
+    {% endif %}
+
+</header>
+<main class="container">
+    <div class="row">
+        {% block content %}
+        {% endblock %}
+    </div>
+</main>
+</body>

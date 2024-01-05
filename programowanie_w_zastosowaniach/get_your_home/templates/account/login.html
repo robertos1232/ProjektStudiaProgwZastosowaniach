@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}
+    <title>Login</title>
+{% endblock %}
+
+{% block content %}
+<h2>Logowanie</h2>
+    {% if warning  %}
+        <div class="alert alert-warning" role="alert">
+          {{  warning }}
+        </div>
+    {% endif  %}
+<form method="post" action="/login/">
+  {% csrf_token %}
+  <div class="form-group">
+    <label for="username">Nazwa użytkownika</label>
+    <input type="text" class="form-control" name="username" aria-describedby="usernameHelp" placeholder="Nazwa użytkownika" />
+  </div>
+  <div class="form-group">
+    <label for="passwordInput">Hasło</label>
+    <input type="password" class="form-control" name="password" placeholder="Password" />
+  </div>
+  <div class="form-group mt-2">
+    <button type="submit" class="btn btn-primary">Zaloguj </button>
+  </div>
+
+</form>
+{% endblock %}

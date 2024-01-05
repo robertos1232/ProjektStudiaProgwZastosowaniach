@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}
+    <title>Login</title>
+{% endblock %}
+
+{% block content %}
+    <script>
+    function formValidation() {
+        let basePassword = document.getElementById("password").value;
+        let repeatedPassword = document.getElementById("repeatPassword").value;
+        if (basePassword !== repeatedPassword) {
+            let alert = document.getElementById("alert")
+            alert.innerText = "Hasła nie są takie same";
+            alert.hidden = false;
+            return false;
+        }
+        return true;
+    }
+    </script>
+
+    <h2>Rejestracja</h2>
+    <div class="alert alert-warning" id="alert" role="alert"  {% if not warning %} hidden="hidden" {% endif %}>
+        {{ warning }}
+    </div>
+    <form method="post" action="/register/" onsubmit="return formValidation();">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="username">Nazwa użytkownika</label>
+            <input type="text" class="form-control" id="username" name="username" aria-describedby="usernameHelp"
+                   placeholder="Nazwa użytkownika"/>
+        </div>
+        <div class="form-group">
+            <label for="password">Hasło</label>
+            <input type="password" class="form-control" id="password" name="password" placeholder="Password"/>
+        </div>
+        <div class="form-group">
+            <label for="repeatPassword">Powtórz hasło</label>
+            <input type="password" class="form-control" id="repeatPassword" placeholder="Password"/>
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" pattern=".+\@.+\.(\w){2,}" class="form-control" name="email" id="email" placeholder="moj@email.pl"/>
+        </div>
+        <div class="form-group">
+            <label for="firstName">Imie</label>
+            <input type="text" class="form-control" name="firstName" id="firstName" placeholder="Twoje imie"/>
+        </div>
+        <div class="form-group">
+            <label for="lastName">Nazwisko</label>
+            <input type="text" class="form-control" name="lastName" id="lastName" placeholder="Twoje nazwisko"/>
+        </div>
+
+        <div class="form-group mt-2">
+            <button type="submit" class="btn btn-primary">Zarejestruj</button>
+        </div>
+    </form>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}
+    <title>Strona główna</title>
+{% endblock %}
+
+{% block content %}
+    {% if announcements %}
+        {% include 'announcements.html' %}
+    {% else %}
+        <main class="flex-column">
+            <div class="p-0">
+                <h3>Brak ogłoszeń</h3>
+            </div>
+        </main>
+    {% endif %}
+{% endblock %}
