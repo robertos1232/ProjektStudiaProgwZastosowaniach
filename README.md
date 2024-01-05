@@ -1,0 +1,2 @@
+# ProjektStudiaProgwZastosowaniach
+Valid reason
