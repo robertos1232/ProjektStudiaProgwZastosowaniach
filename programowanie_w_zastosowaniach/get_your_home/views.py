@@ -1,3 +1,5 @@
+import datetime
+
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render, redirect
@@ -171,7 +173,8 @@ def details(request, city, street, number):
 
     context = {
         "ann": announcement,
-        "photos": photos
+        "photos": photos,
+        "owner": announcement.owner_user.id == request.user.id
     }
 
     return render(
@@ -230,7 +233,8 @@ def add_announcement(request):
             number_of_rooms=number_of_rooms,
             description=request.POST.get('description', ''),
             build_year=build_year,
-            owner_user_id=request.user.id
+            owner_user_id=request.user.id,
+            publication_date=datetime.date.today(),
         )
 
         photo = request.FILES.get('photo', '')

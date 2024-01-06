@@ -122,6 +122,7 @@ class SaleAnnouncement(models.Model):
     build_year = models.SmallIntegerField(
         null=True
     )
+
     owner_user = models.ForeignKey(
         to=User,
         on_delete=models.SET_NULL,
@@ -131,6 +132,13 @@ class SaleAnnouncement(models.Model):
     photos = models.ManyToManyField(
         Photo
     )
+
+    admin_note = models.CharField(
+        max_length=5000,
+        null=True,
+    )
+
+    publication_date = models.DateField()
 
     def __str__(self):
         return (
