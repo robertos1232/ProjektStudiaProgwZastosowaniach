@@ -187,7 +187,7 @@ def details(request, publication_date, city, street, number):
 @login_required(login_url="/login/")
 def add_announcement(request):
     base_context = get_context_to_filter(statuses_to_skip=_skip_statutes)
-    template_to_use = "annotation/add_edit_announcement.html"
+    template_to_use = "announcement/add_edit_announcement.html"
     if request.POST:
         # Walidacja wymaganych pól
         error_message = validate_add_edit_ann_request(
@@ -328,7 +328,7 @@ def change_user_data(request):
 
 @login_required(login_url='/login/')
 def admin_adit_ann(request, publication_date, city, street, number):
-    template_name_to_use = "annotation/admin_edit.html"
+    template_name_to_use = "announcement/admin_edit.html"
 
     if not request.user.is_superuser:
         return Http404()
@@ -362,7 +362,7 @@ def admin_adit_ann(request, publication_date, city, street, number):
 
 @login_required(login_url='/login/')
 def edit_announcement(request, publication_date, city, street, number):
-    template_name_to_use = "annotation/add_edit_announcement.html"
+    template_name_to_use = "announcement/add_edit_announcement.html"
 
     announcement = SaleAnnouncement.objects.get(
         address_city=city,
