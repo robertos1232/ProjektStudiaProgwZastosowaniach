@@ -179,7 +179,7 @@ def details(request, publication_date, city, street, number):
 
     return render(
         request=request,
-        template_name="details.html",
+        template_name="announcement/details.html",
         context=context
     )
 
