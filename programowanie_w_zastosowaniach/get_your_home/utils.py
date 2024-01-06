@@ -16,7 +16,7 @@ def get_context_to_filter(with_nulls=False, statuses_to_skip=None):
     }
     ann_types = SaleAnnouncement.PROPERTY_TYPES
     statutes = {k: v for k, v in SaleAnnouncement.STATUSES.items() if k not in statuses_to_skip}
-    heating_types = {k: v for k, v in SaleAnnouncement.STATUSES.items() if k not in statuses_to_skip}
+    heating_types = {k: v for k, v in SaleAnnouncement.HEATING_TYPES.items() if k not in statuses_to_skip}
     if with_nulls:
         ann_types = all_data | ann_types
         statutes = all_data | statutes
