@@ -343,20 +343,29 @@ def admin_adit_ann(request, publication_date, city, street, number):
     if not announcement:
         return Http404()
 
+    context = {
+        "blocked": announcement.status == "blocked",
+        "comment": announcement.admin_note
+    }
+
     if request.POST:
-        if request.POST.get("blocked", '') == "blocked":
+        warnings = []
+
+        if request.POST.get("block", '') == "blocked":
             announcement.status = "blocked"
+            warnings.append("zablokowano konto")
 
         announcement.admin_note = request.POST.get("comment", "")
         announcement.save()
+        warnings.append("dodano komentarz")
+        context.update({
+            "warning": ",".join(warnings)
+        })
 
     return render(
         request=request,
         template_name=template_name_to_use,
-        context={
-            "blocked": announcement.status == "blocked",
-            "comment": announcement.admin_note
-        }
+        context=context
     )
 
 
