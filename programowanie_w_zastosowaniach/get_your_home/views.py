@@ -156,7 +156,9 @@ def profile_view(request):
 
 
 def details(request, city, street, number):
-    announcement = SaleAnnouncement.objects.get(
+    announcement = SaleAnnouncement.objects.exclude(
+        status__in=_skip_statutes
+    ).get(
         address_city=city,
         address_street=street,
         address_number=number,
@@ -235,6 +237,22 @@ def add_announcement(request):
         if not photo:
             context = {
                 "warning": "Zdjęcie jest wymagane."
+            } | get_context_to_filter()
+            return render(
+                request=request,
+                template_name="add_announcement.html",
+                context=context
+            )
+
+        if SaleAnnouncement.objects.exclude(
+            status__in=_skip_statutes
+        ).filter(
+            address_city=new_announcement.address_city,
+            address_street=new_announcement.address_street,
+            address_number=new_announcement.address_number,
+        ).first():
+            context = {
+                "warning": "Istnieje już aktywne ogłoszenie z takim adresem."
             } | get_context_to_filter()
             return render(
                 request=request,
