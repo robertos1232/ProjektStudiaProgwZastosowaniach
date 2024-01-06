@@ -7,7 +7,8 @@ from .models import SaleAnnouncement
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 
-from .utils import get_context_to_filter, check_fields, save_photo
+from .utils import get_context_to_filter, check_fields, save_photo, validate_add_edit_ann_request, \
+    get_required_fields_and_num_fields_for_announcement, delete_photo
 
 _skip_statutes = ["canceled", "sold", "blocked"]
 
@@ -186,42 +187,23 @@ def details(request, publication_date, city, street, number):
 @login_required(login_url="/login/")
 def add_announcement(request):
     base_context = get_context_to_filter(statuses_to_skip=_skip_statutes)
+    template_to_use = "annotation/add_edit_announcement.html"
     if request.POST:
         # Walidacja wymaganych pól
-        required_fields = {
-            'typeOfAnn': 'Typ ogłoszenia',
-            'typeOfStatus': 'Status ogłoszenia',
-            'typeOfHeating': 'Typ ogrzewania',
-            'price': 'Cena',
-            'buildYear': 'Rok budowy',
-            'area': 'Powierzchnia',
-            'city': 'Miasto',
-            'street': 'Ulica',
-            'addressNumber': 'Numer domu/mieszkania',
-        }
-
-        error_message = check_fields(request.POST, required_fields)
+        error_message = validate_add_edit_ann_request(
+            request.POST,
+            *get_required_fields_and_num_fields_for_announcement()
+        )
         if error_message:
             context = {
                 'warning': error_message
             } | base_context
-            return render(request, "add_announcement.html", context)
-
-        # Konwersja i dodatkowa walidacja dla pól liczbowych
-        try:
-            price = int(request.POST.get('price'))
-            number_of_rooms = int(request.POST.get('roomsNumber')) if request.POST.get('roomsNumber') else 0
-            build_year = int(request.POST.get('buildYear', 0))
-        except ValueError as e:
-            context = {
-                'warning': e
-            } | base_context
-            return render(request, "add_announcement.html", context)
+            return render(request, template_to_use, context)
 
         # Tworzenie nowego ogłoszenia
         new_announcement = SaleAnnouncement(
             type=request.POST.get('typeOfAnn'),
-            price=price,
+            price=request.POST.get('price'),
             status=request.POST.get('typeOfStatus'),
             heating_type=request.POST.get('heating_type'),
             area=request.POST.get('area'),
@@ -229,9 +211,9 @@ def add_announcement(request):
             address_street=request.POST.get('street'),
             address_number=request.POST.get('addressNumber'),
             address_post_code=request.POST.get('postCode', ''),
-            number_of_rooms=number_of_rooms,
+            number_of_rooms=request.POST.get('roomsNumber'),
             description=request.POST.get('description', ''),
-            build_year=build_year,
+            build_year=request.POST.get('buildYear'),
             owner_user_id=request.user.id,
             publication_date=datetime.date.today(),
         )
@@ -243,7 +225,7 @@ def add_announcement(request):
             } | get_context_to_filter()
             return render(
                 request=request,
-                template_name="add_announcement.html",
+                template_name=template_to_use,
                 context=context
             )
 
@@ -259,7 +241,7 @@ def add_announcement(request):
             } | get_context_to_filter()
             return render(
                 request=request,
-                template_name="add_announcement.html",
+                template_name=template_to_use,
                 context=context
             )
 
@@ -278,7 +260,7 @@ def add_announcement(request):
 
     return render(
         request=request,
-        template_name="add_announcement.html",
+        template_name=template_to_use,
         context=base_context
     )
 
@@ -345,17 +327,11 @@ def change_user_data(request):
 
 
 @login_required(login_url='/login/')
-def block_annotation(request, publication_date, city, street, number):
+def admin_adit_ann(request, publication_date, city, street, number):
     template_name_to_use = "annotation/admin_edit.html"
 
     if not request.user.is_superuser:
-        return redirect(
-            details.__name__,
-            public_date=publication_date,
-            city=city,
-            street=street,
-            number=number
-        )
+        return Http404()
 
     announcement = SaleAnnouncement.objects.get(
         address_city=city,
@@ -365,7 +341,7 @@ def block_annotation(request, publication_date, city, street, number):
     )
 
     if not announcement:
-        raise Http404()
+        return Http404()
 
     if request.POST:
         if request.POST.get("blocked", '') == "blocked":
@@ -381,4 +357,71 @@ def block_annotation(request, publication_date, city, street, number):
             "blocked": announcement.status == "blocked",
             "comment": announcement.admin_note
         }
+    )
+
+
+@login_required(login_url='/login/')
+def edit_announcement(request, publication_date, city, street, number):
+    template_name_to_use = "annotation/add_edit_announcement.html"
+
+    announcement = SaleAnnouncement.objects.get(
+        address_city=city,
+        address_street=street,
+        address_number=number,
+        publication_date=publication_date,
+    )
+
+    if not announcement.owner_user.id == request.user.id or not announcement:
+        return Http404()
+
+    base_context = get_context_to_filter(statuses_to_skip=["blocked"]) | {
+        "ann": announcement
+    }
+
+    if request.POST:
+        # Walidacja wymaganych pól
+        error_message = validate_add_edit_ann_request(
+            request.POST,
+            *get_required_fields_and_num_fields_for_announcement()
+        )
+        if error_message:
+            context = {
+                'warning': error_message
+            } | base_context
+            return render(request, template_name_to_use, context)
+
+        announcement.type = request.POST.get('typeOfAnn')
+        announcement.price = request.POST.get('price')
+        announcement.status = request.POST.get('typeOfStatus')
+        announcement.heating_type = request.POST.get('heating_type')
+        announcement.area = request.POST.get('area')
+        announcement.address_city = request.POST.get('city')
+        announcement.address_street = request.POST.get('street')
+        announcement.address_number = request.POST.get('addressNumber')
+        announcement.address_post_code = request.POST.get('postCode', '')
+        announcement.number_of_rooms = request.POST.get('roomsNumber')
+        announcement.description = request.POST.get('description', '')
+        announcement.build_year = request.POST.get('buildYear')
+        announcement.publication_date = announcement.publication_date
+        announcement.save()
+        photo = request.FILES.get('photo', '')
+        if photo:
+            new_photo = save_photo(announcement, photo)
+            if new_photo:
+                announcement.photos.add(new_photo)
+                announcement.save()
+                delete_photo(announcement)
+
+        return redirect(
+            details.__name__,
+            publication_date=announcement.publication_date,
+            city=announcement.address_city,
+            street=announcement.address_street,
+            number=announcement.address_number
+        )
+
+    return render(
+        request=request,
+        template_name=template_name_to_use,
+        context=base_context
     )

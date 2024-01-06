@@ -1,3 +1,4 @@
+import os
 import uuid
 
 from django.conf import settings
@@ -45,6 +46,7 @@ def save_photo(announcement: SaleAnnouncement, photo: TemporaryUploadedFile):
 
     if not photo.content_type.startswith('image'):
         return None
+
     photo_format = photo.content_type.split('/')[1]
     new_photo = Photo(
         name=f'{photo_base_path}_{str(uuid.uuid4())}.{photo_format}'
@@ -54,3 +56,44 @@ def save_photo(announcement: SaleAnnouncement, photo: TemporaryUploadedFile):
         photo_file.writelines(photo.readlines())
     new_photo.save()
     return new_photo
+
+
+def delete_photo(announcement: SaleAnnouncement):
+    photo = announcement.photos.first()
+    if not photo:
+        return None
+    os.remove(f"{settings.MEDIA_ROOT}/{photo.name}")
+    photo.delete()
+
+
+
+def validate_add_edit_ann_request(request_data: QueryDict, required_fields: dict, num_fields: dict):
+    error_message = check_fields(request_data, required_fields)
+    if error_message:
+        return error_message
+    for field_name, description in num_fields.items():
+        try:
+            int(request_data.get(field_name, ''))
+        except ValueError:
+            return f"Pole \"{description}\" nie jest, cyfrą"
+    return None
+
+
+def get_required_fields_and_num_fields_for_announcement():
+    return {
+        'typeOfAnn': 'Typ ogłoszenia',
+        'typeOfStatus': 'Status ogłoszenia',
+        'typeOfHeating': 'Typ ogrzewania',
+        'price': 'Cena',
+        'buildYear': 'Rok budowy',
+        'area': 'Powierzchnia',
+        'city': 'Miasto',
+        'street': 'Ulica',
+        'addressNumber': 'Numer domu/mieszkania',
+    },  {
+        "price": "Cena",
+        "roomsNumber": "Ilość pokoi",
+        'buildYear': 'Rok budowy',
+    }
+
+
