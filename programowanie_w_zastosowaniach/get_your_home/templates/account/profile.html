@@ -18,6 +18,7 @@
                 <div class="card mb-3">
                     <div class="card-body">
                         <h3 class="card-title">Moje dane</h3>
+                        <p class="card-text"><i class="fa fa-user"></i> User: {{ user.username | default:"Brak" }}</p>
                         <p class="card-text"><i class="fa fa-envelope"></i> Email: {{ user.email | default:"Brak" }}</p>
                         <p class="card-text"><i class="fa fa-user"></i> Imię: {{ user.first_name | default:"Brak" }}</p>
                         <p class="card-text"><i class="fa fa-user"></i> Nazwisko: {{ user.last_name | default:"Brak" }}</p>
