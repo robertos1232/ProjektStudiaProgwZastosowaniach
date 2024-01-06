@@ -181,33 +181,38 @@ def details(request, city, street, number):
 
 @login_required(login_url="/login/")
 def add_announcement(request):
+    base_context = get_context_to_filter(statuses_to_skip=_skip_statutes)
     if request.POST:
         # Walidacja wymaganych pól
         required_fields = {
-            'typeOfAnn': 'Type of announcement is required.',
-            'price': 'Price is required.',
-            'typeOfStatus': 'Status is required.',
-            'heating_type': 'Heating type is required.',
-            'area': 'Area is required.',
-            'city': 'City is required.',
-            'street': 'Street is required.',
-            'addressNumber': 'Address number is required.',
-            'postCode': 'Post code is required.',
-            'roomsNumber': 'Number of rooms is required.',
-            'buildYear': 'Build year is required.',
+            'typeOfAnn': 'Typ ogłoszenia',
+            'typeOfStatus': 'Status ogłoszenia',
+            'typeOfHeating': 'Typ ogrzewania',
+            'price': 'Cena',
+            'buildYear': 'Rok budowy',
+            'area': 'Powierzchnia',
+            'city': 'Miasto',
+            'street': 'Ulica',
+            'addressNumber': 'Numer domu/mieszkania',
         }
 
-        for field, error_message in required_fields.items():
-            if not request.POST.get(field):
-                return render(request, "add_announcement.html", {"error": error_message})
+        error_message = check_fields(request.POST, required_fields)
+        if error_message:
+            context = {
+                'warning': error_message
+            } | base_context
+            return render(request, "add_announcement.html", context)
 
         # Konwersja i dodatkowa walidacja dla pól liczbowych
         try:
             price = int(request.POST.get('price'))
             number_of_rooms = int(request.POST.get('roomsNumber')) if request.POST.get('roomsNumber') else 0
             build_year = int(request.POST.get('buildYear', 0))
-        except ValueError:
-            return render(request, "add_announcement.html", {"error": "Invalid numerical value."})
+        except ValueError as e:
+            context = {
+                'warning': e
+            } | base_context
+            return render(request, "add_announcement.html", context)
 
         # Tworzenie nowego ogłoszenia
         new_announcement = SaleAnnouncement(
@@ -228,24 +233,19 @@ def add_announcement(request):
 
         photo = request.FILES.get('photo', '')
         new_announcement.save()
-
-        print(photo)
-        if photo:
-            print("save photo", photo)
-            new_photo = save_photo(new_announcement, photo)
-            new_announcement.photos.add(new_photo)
-            new_announcement.save()
-        else:
-            print("no photo")
-            context={
-                "warning": "Photo is required."
+        if not photo:
+            context = {
+                "warning": "Zdjęcie jest wymagane."
             } | get_context_to_filter()
             return render(
-            request=request,
-            template_name="add_announcement.html",
-            context=context
-        )
-            
+                request=request,
+                template_name="add_announcement.html",
+                context=context
+            )
+
+        new_photo = save_photo(new_announcement, photo)
+        new_announcement.photos.add(new_photo)
+        new_announcement.save()
 
         return redirect(
             details.__name__,
@@ -254,11 +254,10 @@ def add_announcement(request):
             number=new_announcement.address_number
         )
 
-    print("test")
     return render(
         request=request,
         template_name="add_announcement.html",
-        context=get_context_to_filter(statuses_to_skip=_skip_statutes)
+        context=base_context
     )
 
 
