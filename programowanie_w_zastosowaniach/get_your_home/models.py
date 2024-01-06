@@ -146,6 +146,10 @@ class SaleAnnouncement(models.Model):
             f'{self.STATUSES.get(str(self.status))}'
         )
 
+    @property
+    def get_url_date(self):
+        return self.publication_date.strftime("%Y-%m-%d")
+
     class Meta:
         verbose_name = 'Ogłoszenie'
         verbose_name_plural = 'Ogłoszenia'

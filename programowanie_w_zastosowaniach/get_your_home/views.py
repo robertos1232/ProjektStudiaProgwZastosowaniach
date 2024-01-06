@@ -157,13 +157,12 @@ def profile_view(request):
     )
 
 
-def details(request, city, street, number):
-    announcement = SaleAnnouncement.objects.exclude(
-        status__in=_skip_statutes
-    ).get(
+def details(request, public_date, city, street, number):
+    announcement = SaleAnnouncement.objects.get(
         address_city=city,
         address_street=street,
         address_number=number,
+        publication_date=public_date
     )
 
     if not announcement:
@@ -271,6 +270,7 @@ def add_announcement(request):
 
         return redirect(
             details.__name__,
+            date=new_announcement.publication_date,
             city=new_announcement.address_city,
             street=new_announcement.address_street,
             number=new_announcement.address_number

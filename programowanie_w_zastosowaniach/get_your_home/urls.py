@@ -1,7 +1,23 @@
-from django.urls import path
+from datetime import datetime
+
+from django.urls import path, register_converter, re_path
 
 from . import views
 from django.contrib.auth.views import LogoutView
+
+
+class DateConverter:
+    regex = r'\d{4}-\d{1,2}-\d{1,2}'
+    format = '%Y-%m-%d'
+
+    def to_python(self, value):
+        return datetime.strptime(value, self.format).date()
+
+    def to_url(self, value):
+        return value.strftime(self.format)
+
+
+register_converter(DateConverter, 'date')
 
 urlpatterns = [
     path("", views.list_of_sale_announcement, name='index'),
@@ -10,7 +26,7 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(next_page=""), name='logout'),
     path("profile/", views.profile_view, name='profile_view'),
     path("add/", views.add_announcement, name='add_new_announcement'),
-    path("view/<city>/<street>/<number>/", views.details, name="details"),
+    path("view/<date:public_date>/<city>/<street>/<number>/", views.details, name="details"),
     path("filter/", views.list_of_sale_announcement, name="filtered_list"),
     path("profile/password_change/", views.password_change, name="password_change"),
     path("profile/user_data_change/", views.change_user_data, name="user_data_change"),
