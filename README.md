@@ -1,28 +1,59 @@
-Here a simple readme for this project.
+# Project Title: [Simple App House Sale]
 
+## Overview
+Nothing spacial we just want to pass study last year :D
 
-To run this project you need install:
-pipx
-pip
-python = "^3.10"
-django = "5.0.1"
-pillow = "10.2.0"
+## Documentation
+- Python Poetry: [Poetry Docs](https://python-poetry.org/docs/)
 
-also to run this
+## Prerequisites
+Before you begin, ensure you have met the following requirements:
+- Python 3.10 or higher
+- pip
+- pipx
+- django 
+- pillow 
+- poetry
 
-git clone https://github.com/robertos1232/ProjektStudiaProgwZastosowaniach.git
+## Installation
+To set up this project, follow these steps:
 
-cd programowanie_w_zastosowaniach
+1. **Install Dependencies**
+    ```bash
+    pipx install poetry
+    pip install django
+    ```
+
+2. **Clone the Repository**
+    ```bash
+    git clone https://github.com/robertos1232/ProjektStudiaProgwZastosowaniach.git
+    cd programowanie_w_zastosowaniach
+    ```
+
+3. **Install Required Python Packages**
+    ```bash
+    poetry install
+    ```
+
+## Running the Project
+To run the project, execute the following command:
+```bash
 ./manage.py runserver
+```
 
+## Resetting the Database
+If you need to reset the database and start over:
 
-If you want to delete db and start allover again
+## Migrate the Database
 
-git clone https://github.com/robertos1232/ProjektStudiaProgwZastosowaniach.git
-
-cd programowanie_w_zastosowaniach
-
+```bash
+Create a database
 ./manage.py migrate
+
+Create a Superuser
 ./manage.py createsuperuser
+
+Run the Server
 ./manage.py runserver
+``````
 
