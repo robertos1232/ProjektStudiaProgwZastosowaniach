@@ -62,13 +62,16 @@
       {% load static %}
       <div class="gallery">
         {% for ann, photo in announcements.items %}
-          <div class="img-container">
-            <img class="img-fluid" src="{% get_media_prefix  %}{{ photo }}" alt="Zdjęcie główne" />
-            <div class="img-details">
-              <a href="view/{{ ann.get_url_date }}/{{ ann.address_city }}/{{ ann.address_street }}/{{ ann.address_number }}">{{ ann }}</a>
-              <p>Cena: {{ ann.price }} zł</p>
+          <!-- Link obejmuje teraz obraz i szczegóły -->
+          <a href="view/{{ ann.get_url_date }}/{{ ann.address_city }}/{{ ann.address_street }}/{{ ann.address_number }}" class="img-link">
+            <div class="img-container">
+              <img class="img-fluid" src="{% get_media_prefix %}{{ photo }}" alt="Zdjęcie główne" />
+              <div class="img-details">
+                {{ ann }}
+                <p>Cena: {{ ann.price }} zł</p>
+              </div>
             </div>
-          </div>
+          </a>
         {% endfor %}
       </div>
     </div>
