@@ -59,15 +59,12 @@
     </style>
     {% if user.is_superuser %}
         <div class="row m-2">
-            <a href="block" class="btn btn-danger">Zablokuj ogłoszenie</a>
+            <a href="admin" class="btn btn-danger">Administracja ogłoszeniem</a>
         </div>
     {% endif %}
     {% if owner %}
         <div class="row m-2">
-            <a href="edit" class="btn btn-outline-info">Edytuj ogłoszenia</a>
-        </div>
-        <div class="row m-2">
-            <a href="cancel" class="btn btn-outline-warning">Zamknij ogłoszenia</a>
+            <a href="edit" class="btn btn-outline-warning">Edytuj / zablokuj ogłoszenia</a>
         </div>
         {% if ann.admin_note %}
             {% if ann.status == "blocked" %}
