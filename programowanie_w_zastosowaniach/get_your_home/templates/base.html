@@ -73,6 +73,69 @@
                 grid-template-columns: 1fr;
             }
         }
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-gap: 20px;
+        }
+
+        .img-wrapper {
+            width: 100%;
+            height: 220px;
+            border: 1px solid #ddd;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: box-shadow 0.3s ease-in-out;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .img-wrapper img {
+            width: auto; /* szerokość obrazu może być automatyczna */
+            height: 100%; /* wysokość obrazu zawsze wypełni kontener */
+            object-fit: cover; /* obraz będzie pokrywał cały kontener bez deformacji */
+        }
+
+        .img-wrapper:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .img-details {
+            padding: 5px;
+            text-align: center;
+        }
+
+        .img-details a {
+            color: #333;
+            text-decoration: none;
+        }
+
+        .img-details p {
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 1000px) {
+        .gallery {
+            grid-template-columns: 1fr;
+        }
+        }
+        .img-container {
+            overflow: hidden; /* Zapobiega wyświetlaniu się cienia poza kontenerem */
+            margin-bottom: 20px; /* Dodaje odstęp na dole kontenera */
+        }
+        .img-container img {
+            width: 100%; /* Szerokość obrazu dostosowuje się do szerokości kontenera */
+            height: 200px; /* Wysokość obrazu jest automatyczna, aby zachować proporcje */
+            object-fit: cover; /* Zapewnia, że obraz wypełni kontener bez deformacji */
+            border-radius: 5px; /* Opcjonalnie, dodaje zaokrąglenie narożników obrazu */
+            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Dodaje płynne przejście dla transformacji i cienia */
+        }
+        .img-container:hover img {
+            transform: scale(1.05); /* Delikatnie powiększa obraz */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Dodaje cień dookoła obrazu */
+        }
     </style>
 </head>
 <body>
