@@ -42,7 +42,8 @@ To run the project, execute the following command:
 ```
 
 ## Resetting the Database
-If you need to reset the database and start over:
+If you need to reset the database and start over.
+Remeber to also delete images from /media catalog and delete the sqlite.db.
 
 ## Migrate the Database
 
