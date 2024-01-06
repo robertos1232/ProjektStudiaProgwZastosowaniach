@@ -182,9 +182,37 @@ def details(request, city, street, number):
 @login_required(login_url="/login/")
 def add_announcement(request):
     if request.POST:
+        # Walidacja wymaganych pól
+        required_fields = {
+            'typeOfAnn': 'Type of announcement is required.',
+            'price': 'Price is required.',
+            'typeOfStatus': 'Status is required.',
+            'heating_type': 'Heating type is required.',
+            'area': 'Area is required.',
+            'city': 'City is required.',
+            'street': 'Street is required.',
+            'addressNumber': 'Address number is required.',
+            'postCode': 'Post code is required.',
+            'roomsNumber': 'Number of rooms is required.',
+            'buildYear': 'Build year is required.',
+        }
+
+        for field, error_message in required_fields.items():
+            if not request.POST.get(field):
+                return render(request, "add_announcement.html", {"error": error_message})
+
+        # Konwersja i dodatkowa walidacja dla pól liczbowych
+        try:
+            price = int(request.POST.get('price'))
+            number_of_rooms = int(request.POST.get('roomsNumber')) if request.POST.get('roomsNumber') else 0
+            build_year = int(request.POST.get('buildYear', 0))
+        except ValueError:
+            return render(request, "add_announcement.html", {"error": "Invalid numerical value."})
+
+        # Tworzenie nowego ogłoszenia
         new_announcement = SaleAnnouncement(
             type=request.POST.get('typeOfAnn'),
-            price=int(request.POST.get('price')),
+            price=price,
             status=request.POST.get('typeOfStatus'),
             heating_type=request.POST.get('heating_type'),
             area=request.POST.get('area'),
@@ -192,19 +220,32 @@ def add_announcement(request):
             address_street=request.POST.get('street'),
             address_number=request.POST.get('addressNumber'),
             address_post_code=request.POST.get('postCode', ''),
-            number_of_rooms=int(request.POST.get('roomsNumber')) if request.POST.get('roomsNumber') != "" else 0,
+            number_of_rooms=number_of_rooms,
             description=request.POST.get('description', ''),
-            build_year=int(request.POST.get('buildYear', 0)),
+            build_year=build_year,
             owner_user_id=request.user.id
         )
 
         photo = request.FILES.get('photo', '')
         new_announcement.save()
 
+        print(photo)
         if photo:
+            print("save photo", photo)
             new_photo = save_photo(new_announcement, photo)
             new_announcement.photos.add(new_photo)
             new_announcement.save()
+        else:
+            print("no photo")
+            context={
+                "warning": "Photo is required."
+            } | get_context_to_filter()
+            return render(
+            request=request,
+            template_name="add_announcement.html",
+            context=context
+        )
+            
 
         return redirect(
             details.__name__,
@@ -213,6 +254,7 @@ def add_announcement(request):
             number=new_announcement.address_number
         )
 
+    print("test")
     return render(
         request=request,
         template_name="add_announcement.html",

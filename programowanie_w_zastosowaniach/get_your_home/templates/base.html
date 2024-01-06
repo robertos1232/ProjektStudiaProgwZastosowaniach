@@ -4,10 +4,76 @@
 <head>
     <link href="{% static "bootstrap_5.3.2/css/bootstrap.css" %}" rel="stylesheet">
     <script src="{% static "bootstrap_5.3.2/js/bootstrap.bundle.js" %}"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">    
     <meta charset="UTF-8">
     {% block title %}
         <title>Nie ustawiony tytuł strony :(</title>
     {% endblock %}
+    <style>
+        .grid{
+            display:grid;
+            grid-template-columns: 1fr 1fr; 
+            justify-content: center;
+        }
+        .grid > div{
+            width: 100%;
+            justify-self: center;
+            /* margin: auto 0 auto; */
+            display: grid;
+            /* grid-template-columns: 1fr; */
+            justify-content: center;
+        }
+        .grid > div > input{
+            width: 350px;
+            border-radius: 5px;
+            border: 1px solid #aaa;
+        }
+        .grid > div > label{
+            justify-self: center;
+            /* margin: auto 5px auto; */
+        }
+        .grid-form > div > label{
+            justify-self: center;
+            /* margin: auto 5px auto; */
+        }
+        .grid > div > select{   
+            width: 350px;
+            border-radius: 5px;
+            border: 1px solid #aaa;
+        }
+        .grid-form{
+            display:grid;
+            grid-template-columns: 1fr;
+            justify-content: center;
+            padding: 20px;
+        }
+        .grid-form > div {
+            width: 100%;
+            justify-self: center;
+            /* margin: auto 0 auto; */
+            display: grid;
+            grid-template-columns: 1fr;
+            justify-content: center;
+        }
+        .grid-form > div > textarea{
+            width: 80%;
+            border-radius: 5px;
+            border: 1px solid #aaa;
+            height: 200px;
+            justify-self: center;
+            margin: auto 0 auto;
+        }
+        .grid-form > div > button{
+            width: 350px;
+            margin: auto;
+        }
+        @media screen and (max-width: 1000px) {
+            .grid{
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
 <header class="d-flex align-items-center justify-content-center py-3 mb-4 border-bottom">
