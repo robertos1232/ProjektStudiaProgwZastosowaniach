@@ -154,6 +154,28 @@
             outline: none !important;
             box-shadow: none !important;
         }
+        .btn-custom {
+            background-color: #007bff; /* Pomarańczowy kolor tła */
+            border: none; /* Brak obramowania */
+            color: white; /* Biały tekst */
+            padding: 8px 40px; /* Padding wokół tekstu */
+            border-radius: 10px; /* Zaokrąglone rogi */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Lekki cień dla efektu głębi */
+            text-transform: uppercase; /* Wszystkie litery jako wielkie */
+            transition: all 0.3s; /* Animacja wszystkich zmian w czasie 0.3 sekundy */
+            font-size: 16px; /* Rozmiar czcionki tekstu */
+        }
+
+        .btn-custom:hover {
+            background-color: #faa937; /* Jaśniejszy kolor tła dla stanu :hover */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Większy cień dla efektu głębi przy najechaniu */
+            transform: translateY(-2px); /* Podniesienie przycisku o 2px przy najechaniu */
+        }
+
+        .btn-custom:active {
+            transform: translateY(1px); /* Lekkie 'wciśnięcie' przycisku podczas kliknięcia */
+            box-shadow: 0 2px 3px rgba(0, 0, 0, 0.3); /* Mniejszy cień dla efektu 'wciśnięcia' */
+        }
     </style>
 </head>
 <body>
