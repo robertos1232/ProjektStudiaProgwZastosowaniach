@@ -63,9 +63,11 @@
         </div>
     {% endif %}
     {% if owner %}
+        {% if not ann.status == "blocked" %}
         <div class="row m-2">
             <a href="edit" class="btn btn-outline-warning">Edytuj / zablokuj ogłoszenia</a>
         </div>
+        {% endif %}
         {% if ann.admin_note %}
             {% if ann.status == "blocked" %}
                 <div>

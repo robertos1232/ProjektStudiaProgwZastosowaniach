@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from django.urls import path, register_converter, re_path
+from django.urls import path, register_converter
 
 from . import views
 from django.contrib.auth.views import LogoutView
