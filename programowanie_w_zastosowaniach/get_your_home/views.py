@@ -232,7 +232,6 @@ def add_announcement(request):
         )
 
         photo = request.FILES.get('photo', '')
-        new_announcement.save()
         if not photo:
             context = {
                 "warning": "Zdjęcie jest wymagane."
@@ -243,6 +242,7 @@ def add_announcement(request):
                 context=context
             )
 
+        new_announcement.save()
         new_photo = save_photo(new_announcement, photo)
         new_announcement.photos.add(new_photo)
         new_announcement.save()
