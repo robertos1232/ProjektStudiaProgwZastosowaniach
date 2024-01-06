@@ -176,6 +176,44 @@
             transform: translateY(1px); /* Lekkie 'wciśnięcie' przycisku podczas kliknięcia */
             box-shadow: 0 2px 3px rgba(0, 0, 0, 0.3); /* Mniejszy cień dla efektu 'wciśnięcia' */
         }
+        .card-title {
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .card-text i {
+            margin-right: 5px;
+        }
+
+        .btn-outline-info, .btn-outline-secondary {
+            margin-top: 10px;
+            margin-right: 5px;
+        }
+
+        .card {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease-in-out;
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-img-top {
+            width: 100%;
+            height: 200px; /* lub 'auto', w zależności od preferowanej wysokości */
+            object-fit: cover; /* zapewnia, że obrazy są odpowiednio przycięte i pasują do karty */
+        }
+
+        .card-title {
+            margin-bottom: 15px;
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+
+        .card-text {
+            margin-bottom: 15px;
+        }
     </style>
 </head>
 <body>

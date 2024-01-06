@@ -14,27 +14,41 @@
         {% endif %}
 
         <div class="row">
-            <div class="col-6">
-                <h3>Moje dane</h3>
-                <b>Email</b>: {{ user.email | default:"Brak" }}<br/>
-                <b>Imie</b>: {{ user.first_name | default:"Brak" }}<br/>
-                <b>Nazwisko</b>: {{ user.last_name | default:"Brak" }}<br/>
-                <a href="user_data_change/" class="btn btn-outline-info">Zmiana danych</a>
-                <a href="password_change/" class="btn btn-outline-secondary">Zmiana hasła</a>
+            <div class="col-12 col-md-6">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h3 class="card-title">Moje dane</h3>
+                        <p class="card-text"><i class="fa fa-envelope"></i> Email: {{ user.email | default:"Brak" }}</p>
+                        <p class="card-text"><i class="fa fa-user"></i> Imię: {{ user.first_name | default:"Brak" }}</p>
+                        <p class="card-text"><i class="fa fa-user"></i> Nazwisko: {{ user.last_name | default:"Brak" }}</p>
+                        <a href="user_data_change/" class="btn btn-outline-info">Zmiana danych</a>
+                        <a href="password_change/" class="btn btn-outline-secondary">Zmiana hasła</a>
+                    </div>
+                </div>
             </div>
         </div>
+
         <div class="row mt-4">
             <div class="col">
                 <h1>Twoje ogłoszenia</h1>
                 {% load static %}
                 <div class="row pt-5">
-                    <div class="col-6">
-                        {% for ann, photo in announcements.items %}
-                            <img class="d-block w-50" src="{% get_media_prefix %}{{ photo }}" alt="Zdejecie glowne"/>
-                            <a href="/view/{{ ann.get_url_date }}/{{ ann.address_city }}/{{ ann.address_street }}/{{ ann.address_number }}">{{ ann }}</a>
-                            Cena: {{ ann.price }} zł
-                        {% endfor %}
-                    </div>
+                    {% for ann, photo in announcements.items %}
+                        <div class="col-12 col-md-6 col-lg-4 mb-4">
+                            <div class="card">
+                                <!-- Link obejmuje tylko obraz -->
+                                <a href="/view/{{ ann.get_url_date }}/{{ ann.address_city }}/{{ ann.address_street }}/{{ ann.address_number }}" class="img-link">
+                                    <img class="card-img-top" src="{% get_media_prefix %}{{ photo }}" alt="Zdjęcie nieruchomości">
+                                </a>
+                                <div class="card-body">
+                                    <!-- Opis pozostaje pod obrazem i nie jest częścią linku -->
+                                    <h5 class="card-title">{{ ann }}</h5>
+                                    <p class="card-text">Cena: {{ ann.price }} zł</p>
+                                    <a href="/view/{{ ann.get_url_date }}/{{ ann.address_city }}/{{ ann.address_street }}/{{ ann.address_number }}" class="btn btn-primary">Zobacz więcej</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>
