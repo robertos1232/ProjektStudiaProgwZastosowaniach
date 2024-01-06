@@ -342,3 +342,43 @@ def change_user_data(request):
         template_name=template_name_to_use,
         context={}
     )
+
+
+@login_required(login_url='/login/')
+def block_annotation(request, publication_date, city, street, number):
+    template_name_to_use = "annotation/admin_edit.html"
+
+    if not request.user.is_superuser:
+        return redirect(
+            details.__name__,
+            public_date=publication_date,
+            city=city,
+            street=street,
+            number=number
+        )
+
+    announcement = SaleAnnouncement.objects.get(
+        address_city=city,
+        address_street=street,
+        address_number=number,
+        publication_date=publication_date,
+    )
+
+    if not announcement:
+        raise Http404()
+
+    if request.POST:
+        if request.POST.get("blocked", '') == "blocked":
+            announcement.status = "blocked"
+
+        announcement.admin_note = request.POST.get("comment", "")
+        announcement.save()
+
+    return render(
+        request=request,
+        template_name=template_name_to_use,
+        context={
+            "blocked": announcement.status == "blocked",
+            "comment": announcement.admin_note
+        }
+    )
